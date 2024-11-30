@@ -38,132 +38,32 @@ Install the following nuget package:
 </ItemGroup>
 ```
 
-Create an application with the following code:
+Create an application with the following [code](./Scripts/dotnet.cs)
 
-``` dotnet
-// See https://aka.ms/new-console-template for more information
-using Emgu.CV;
+#### .NET (MacOS)
 
-var rtspUrl = "rtsp://192.168.1.124:8554/gopro";
+Install the following nuget package:
 
-// Create a VideoCapture object
-using (VideoCapture capture = new VideoCapture(rtspUrl, VideoCapture.API.Ffmpeg))
-{
-    if (!capture.IsOpened)
-    {
-        Console.WriteLine("Error: Could not open RTSP stream.");
-        return;
-    }
-
-    // Create a directory to save the frames
-    string outputDir = $"saved_frames_{Guid.NewGuid()}";
-    if (!Directory.Exists(outputDir))
-    {
-        Directory.CreateDirectory(outputDir);
-    }
-
-    int frameCount = 0;
-    int savedFrameCount = 0;
-
-    using (Mat frame = new Mat())
-    {
-        while (true)
-        {
-            capture.Read(frame);
-            if (frame.IsEmpty)
-            {
-                Console.WriteLine("Failed to grab frame");
-                break;
-            }
-
-            // Display the frame
-            CvInvoke.Imshow("RTSP Stream", frame);
-
-            // Save every 30th frame to disk
-            if (frameCount % 30 == 0)
-            {
-                string frameFilename = Path.Combine(outputDir, $"frame_{savedFrameCount}.jpg");
-                frame.Save(frameFilename);
-                Console.WriteLine($"Saved {frameFilename}");
-                savedFrameCount += 1;
-            }
-
-            frameCount++;
-
-            // Press 'q' to exit the loop
-            if (CvInvoke.WaitKey(1) == 'q')
-            {
-                break;
-            }
-        }
-    }
-
-    // Release the VideoCapture object
-    capture.Release();
-    CvInvoke.DestroyAllWindows();
-}
+``` xml
+<ItemGroup>
+    <PackageReference Include="FFMpegCore" Version="5.1.0" />
+    <PackageReference Include="SkiaSharp" Version="3.0.0-preview.5.4" />
+</ItemGroup>
 ```
+
+Create an application with the following [code](./Scripts/dotnet-macos.cs)
 
 #### Python
 
 To start of we can create a virtual environment and install opencv for python.
 
-``` python
+``` bash
 python3 -m venv venv
 source venv/bin/activate
 pip install opencv-python
 ```
 
-You can now copy this application and run it to see if the stream is working:
-
-``` python
-import cv2
-import os
-
-# Define the RTSP stream URL
-rtsp_url = "rtsp://192.168.1.124:8554/gopro"
-
-# Open a connection to the RTSP stream
-cap = cv2.VideoCapture(rtsp_url)
-
-if not cap.isOpened():
-    print("Error: Could not open RTSP stream.")
-    exit()
-
-# Create a directory to save the frames
-output_dir = "saved_frames"
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-
-frame_count = 0
-saved_frame_count = 0
-
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        print("Failed to grab frame")
-        break
-
-    # Display the frame
-    cv2.imshow('RTSP Stream', frame)
-
-    # Save every 30th frame to disk
-    if frame_count % 30 == 0:
-        frame_filename = os.path.join(output_dir, f"frame_{saved_frame_count}.jpg")
-        cv2.imwrite(frame_filename, frame)
-        print(f"Saved {frame_filename}")
-        saved_frame_count += 1
-
-    frame_count += 1
-
-    # Press 'q' to exit the loop
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release the capture and close any OpenCV windows
-cap.release()
-cv2.destroyAllWindows()
-```
+You can now copy [this](./Scripts/python.py) application and run it to see if the stream is working
 
 ### 2. Analyze an image via Azure Computer Vision
 

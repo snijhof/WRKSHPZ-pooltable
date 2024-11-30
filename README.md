@@ -44,7 +44,7 @@ Create an application with the following code:
 // See https://aka.ms/new-console-template for more information
 using Emgu.CV;
 
-var rtspUrl = "rtsp://remilia:8554/gopro";
+var rtspUrl = "rtsp://192.168.1.124:8554/gopro";
 
 // Create a VideoCapture object
 using (VideoCapture capture = new VideoCapture(rtspUrl, VideoCapture.API.Ffmpeg))
@@ -121,7 +121,7 @@ import cv2
 import os
 
 # Define the RTSP stream URL
-rtsp_url = "rtsp://remilia:8554/gopro"
+rtsp_url = "rtsp://192.168.1.124:8554/gopro"
 
 # Open a connection to the RTSP stream
 cap = cv2.VideoCapture(rtsp_url)

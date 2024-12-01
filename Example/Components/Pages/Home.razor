@@ -1,0 +1,32 @@
+﻿@page "/"
+@using Example.Services
+@inject IImageAnalyzer ImageAnalyzer;
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<InputFile OnChange="OnInputFileChange" accept="image/*" />
+
+@if(string.IsNullOrEmpty(ImageData) is false)
+{
+    <p>@ImageData</p>
+}
+
+@code {
+    public string ImageData { get; set; }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs arg)
+    {
+        var file = arg.File;
+        
+        if (file is not null)
+        {
+            using var stream = file.OpenReadStream();
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            
+            ImageData = await ImageAnalyzer.Analyze(memoryStream.ToArray());
+        }
+    }
+
+}
